@@ -1,0 +1,26 @@
+---
+title: "Chapter 1: Introduction"
+output: 
+  html_document:
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Questions for review
+
+1. What is **data**? 
+
+2. What is **data science**?
+
+3. Define **visualisation** and **modeling** in the context of data science. What are their respective strengths and weaknesses?
+
+4. What size (in Gb) are datasets in **big data**?
+
+5. Give three examples of **non-rectangular data**. Do you think these are categorised as **structured** or **unstructured** data?
+
+6. Name the six packages that form the core of the **tidyverse**.
+
+
