@@ -31,11 +31,13 @@ We went through the first chapter of the book, which is an introduction to data 
 
 ## Interesting discussions 
 
-* **Exploratory data analysis** is a lost art. People seem ingrained to seek the statistical test that gives them an arbitrary p-value. One should actually explore the data, check for outliers and understand how the data is distributed. Do not naively apply a commonly used statistical test without any preliminary analysis --- a common habit! Exploring the data is definitely necessary to even begin making sense of it, especially if the data is too large and complex to decipher by eye. A counter argument, however, is that too much exploration could lead to "fishing" for patterns in the data. There has to be a balance and this depends on a researcher's integrity.
+* **Exploratory data analysis is a lost art.** People seem ingrained to seek the statistical test that gives them an arbitrary p-value. One should actually explore the data, check for outliers and understand how the data is distributed. Do not naively apply a commonly used statistical test without any preliminary analysis --- a common habit! Exploring the data is definitely necessary to even begin making sense of it, especially if the data is too large and complex to decipher by eye. A counter argument, however, is that too much exploration could lead to "fishing" for patterns in the data. There has to be a balance and this depends on a researcher's integrity.
 
-* **Statistics** could be understood without data. A researcher could study statistics by making simulations on the computer and finding the best mathematical way to describe them. Simulations are invaluable for equations that cannot be solved analytically as well. Check this out: [Data science vs. statistics: two cultures?](https://link.springer.com/article/10.1007/s42081-018-0009-3)
+* Unlike data science, **statistics** could be understood without data. A researcher could study statistics by making simulations on the computer and finding the best mathematical way to describe them. Simulations are invaluable for equations that cannot be solved analytically as well. Check this out: [Data science vs. statistics: two cultures?](https://link.springer.com/article/10.1007/s42081-018-0009-3)
 
-* The idea of what counts as big data seems to differ from people to people, depending on coding experience. The book mentioned that 10-100 Gb counts as "larger data", but to some attendees a table with 50,000 rows (likely only few Mbs) might already be intimidating.
+* **Rectangular data**, as mentioned into the book, probably refers to **tabular or spreadsheet data**, where the order of the columns and rows do not matter whichever they appear. *Images* are "rectangular" in some sense, but unlike tabular data, jumbling up the rows or columns would render an image meaningless.
+
+* The idea of what counts as **big data** seems to differ from people to people, depending on coding experience. The book mentioned that 10-100 Gb counts as "larger data", but to some attendees a table with 50,000 rows (likely only few Mbs) might already be intimidating.
 
 ## Logistics of the meeting (aim to decide this as time goes)
 
