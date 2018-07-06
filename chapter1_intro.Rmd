@@ -1,5 +1,5 @@
 ---
-title: "Chapter 1: Introduction"
+title: "Week 1: 6 July 2018 --- Introduction"
 output: 
   html_document:
     css: style.css
@@ -8,6 +8,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+We went through the first chapter of the book, which is an introduction to data science and its core principles.
 
 ## Questions for review (answers in the book)
 
@@ -29,7 +31,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Interesting discussions 
 
-* **Exploratory data analysis** is a lost art. People seem ingrained to seek the statistical test that gives them an arbitrary p-value. One should actually explore the data, check for outliers and understand how the data is distributed. Do not naively apply a commonly used statistical test without any preliminary analysis. A counter argument, however, is that too much exploration could lead to "fishing" for patterns in the data. Make no mistake, exploring the data is definitely necessary to even begin making sense of it, especially if the data is too large and complex to decipher by eye. There has to be a balance, however, and it also depends on a researcher's integrity.
+* **Exploratory data analysis** is a lost art. People seem ingrained to seek the statistical test that gives them an arbitrary p-value. One should actually explore the data, check for outliers and understand how the data is distributed. Do not naively apply a commonly used statistical test without any preliminary analysis --- a common habit! Exploring the data is definitely necessary to even begin making sense of it, especially if the data is too large and complex to decipher by eye. A counter argument, however, is that too much exploration could lead to "fishing" for patterns in the data. There has to be a balance and this depends on a researcher's integrity.
 
 * **Statistics** could be understood without data. A researcher could study statistics by making simulations on the computer and finding the best mathematical way to describe them. Simulations are invaluable for equations that cannot be solved analytically as well. Check this out: [Data science vs. statistics: two cultures?](https://link.springer.com/article/10.1007/s42081-018-0009-3)
 
