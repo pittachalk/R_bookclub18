@@ -9,7 +9,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Questions for review (answers in the book)
+## Questions for review (answers in the book)
 
 1. Name the six packages that form the core of the **tidyverse**.
 
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 4. Give three examples of **non-rectangular data**. Do you think these are categorised as **structured** or **unstructured** data?
 
-# Questions to ponder (answers in the brain)
+## Questions to ponder (answers in the brain)
 
 1. What is **data**? 
 
@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 3. Why do you want to join the book club? What do you aim to achieve from it?
 
-# Interesting topics 
+## Interesting discussions 
 
 * **Exploratory data analysis** is a lost art. People seem ingrained to seek the statistical test that gives them an arbitrary p-value. One should actually explore the data, check for outliers and understand how the data is distributed. Do not naively apply a commonly used statistical test without any preliminary analysis. A counter argument, however, is that too much exploration could lead to "fishing" for patterns in the data. Make no mistake, exploring the data is definitely necessary to even begin making sense of it, especially if the data is too large and complex to decipher by eye. There has to be a balance, however, and it also depends on a researcher's integrity.
 
@@ -35,7 +35,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 * The idea of what counts as big data seems to differ from people to people, depending on coding experience. The book mentioned that 10-100 Gb counts as "larger data", but to some attendees a table with 50,000 rows (likely only few Mbs) might already be intimidating.
 
-# Logistics of the meeting (aim to decide this as time goes)
+## Logistics of the meeting (aim to decide this as time goes)
 
 1. Aim to have rotating chairs, so everyone has a say.
 
