@@ -9,18 +9,40 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Questions for review
+# Questions for review (answers in the book)
 
-1. What is **data**? 
+1. Name the six packages that form the core of the **tidyverse**.
 
-2. What is **data science**?
+2. What size (in Gb) are datasets in **big data**? 
 
 3. Define **visualisation** and **modeling** in the context of data science. What are their respective strengths and weaknesses?
 
-4. What size (in Gb) are datasets in **big data**?
+4. Give three examples of **non-rectangular data**. Do you think these are categorised as **structured** or **unstructured** data?
 
-5. Give three examples of **non-rectangular data**. Do you think these are categorised as **structured** or **unstructured** data?
+# Questions to ponder (answers in the brain)
 
-6. Name the six packages that form the core of the **tidyverse**.
+1. What is **data**? 
 
+2. What is **data science**? How is it different from **statistics**?
 
+3. Why do you want to join the book club? What do you aim to achieve from it?
+
+# Interesting topics 
+
+* **Exploratory data analysis** is a lost art. People seem ingrained to seek the statistical test that gives them an arbitrary p-value. One should actually explore the data, check for outliers and understand how the data is distributed. Do not naively apply a commonly used statistical test without any preliminary analysis. A counter argument, however, is that too much exploration could lead to "fishing" for patterns in the data. Make no mistake, exploring the data is definitely necessary to even begin making sense of it, especially if the data is too large and complex to decipher by eye. There has to be a balance, however, and it also depends on a researcher's integrity.
+
+* **Statistics** could be understood without data. A researcher could study statistics by making simulations on the computer and finding the best mathematical way to describe them. Simulations are invaluable for equations that cannot be solved analytically as well. Check this out: [Data science vs. statistics: two cultures?](https://link.springer.com/article/10.1007/s42081-018-0009-3)
+
+* The idea of what counts as big data seems to differ from people to people, depending on coding experience. The book mentioned that 10-100 Gb counts as "larger data", but to some attendees a table with 50,000 rows (likely only few Mbs) might already be intimidating.
+
+# Logistics of the meeting (aim to decide this as time goes)
+
+1. Aim to have rotating chairs, so everyone has a say.
+
+2. How long should the meeting duration be? Need to account for the busy schedules of people who work in the lab.
+
+3. Attendees are recommended to use *slack* to mention topics of interest **2 days in advance** before a meeting. Chair could check it in advance.
+
+4. Separate channel for exercises on *slack*?
+
+5. Aim to pace the sessions accordingly to avoid anyone falling behind. Please shout (or type) if you need more time for a chapter.
