@@ -8,7 +8,7 @@ Meetings are held every other Friday at 9.30am.
 
 ## Week 1: 6 July 2018
 
-Pilot session discussing the first chapter of the book about what data science is. Logistics of the meeting are also discussed. [Link](chapter1_intro.html).
+Pilot session discussing the first chapter of the book about what data science is. Logistics of the meeting are also discussed. [Link](chapter1_intro.html)
 
 ## Week 2: 20 July 2018 
 
