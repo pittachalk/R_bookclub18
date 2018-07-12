@@ -1,0 +1,24 @@
+---
+title: "Week 2: 20 July 2018 --- Data visualisation"
+output: 
+  html_document:
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We plan to read through the third chapter of the book about data visualisation.
+
+## Questions for review (answers in the book)
+
+to come
+
+## Questions to ponder (answers in the brain)
+
+to come
+
+## Interesting discussions 
+
+to come

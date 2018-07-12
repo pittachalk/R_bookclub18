@@ -12,5 +12,5 @@ Pilot session discussing the first chapter of the book about what data science i
 
 ## Week 2: 20 July 2018 
 
-To come. Aim to go through [Chapter 3: data visualisation](http://r4ds.had.co.nz/data-visualisation.html).
+To come. Aim to go through [Chapter 3: data visualisation](http://r4ds.had.co.nz/data-visualisation.html). [Link](week2_datavisualisation.html)
 
