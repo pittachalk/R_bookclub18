@@ -126,15 +126,47 @@ $(document).ready(function () {
 <p>We plan to read through the third chapter of the book about data visualisation.</p>
 <div id="questions-for-review-answers-in-the-book" class="section level2">
 <h2>Questions for review (answers in the book)</h2>
-<p>to come</p>
+<ol style="list-style-type: decimal">
+<li><p>What is an <strong>aesthetic</strong>? Name three examples of aesthetic in ggplot2. (section 3.3)</p></li>
+<li>What are <strong>facets</strong>?
+<ul>
+<li>Distinguish between facet_wrap() and facet_grid(). (section 3.5)</li>
+</ul></li>
+<li>What is a <strong>geom</strong>? (section 3.6)
+<ul>
+<li>What’s the difference between <strong>global</strong> and <strong>local</strong> mapping?</li>
+</ul></li>
+</ol>
 </div>
 <div id="questions-to-ponder-answers-in-the-brain" class="section level2">
 <h2>Questions to ponder (answers in the brain)</h2>
-<p>to come</p>
+<ol style="list-style-type: decimal">
+<li>Distinguish between discrete and continuous data. For these aesthetics, discuss which is suitable for discrete, continuous data, both or neither.
+<ul>
+<li>size</li>
+<li>shape</li>
+<li>colour</li>
+<li>linetype</li>
+<li>alpha</li>
+</ul>
+<p>Consider: discrete data can be categorial or non-categorial.</p></li>
+<li>With respect to <strong>geom_point</strong> objects, what is the maximum number of dimensions of our data could be simultaneously represented <strong>within a single ggplot</strong>?
+<ul>
+<li>Consider we have two axes, various aesthetics and facetting at our disposal.</li>
+</ul></li>
+<li><p>How many colours can the human eye distinguish?</p></li>
+</ol>
 </div>
 <div id="interesting-discussions" class="section level2">
 <h2>Interesting discussions</h2>
-<p>to come</p>
+<ul>
+<li><p>Things that doesn’t convey information about a variable, but only changes the appearance of the plot go outside aes.</p></li>
+<li>There are many types of geoms to visualise the same dataset, and they can reveal different aspects about it. There are over 30 geoms in ggplot2 summarised in their official <a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">cheatsheet</a>. Also recommended is the <a href="https://www.data-to-viz.com/">from Data to Viz</a> website. They feature a <a href="https://www.data-to-viz.com/caveats.html">section</a> about the caveats of commonly used plots, and how one could work around their pitfalls:
+<ul>
+<li><strong>Boxplots</strong> summarise a distribution into several numbers: Q1, median, Q3, etc. However, as described <a href="https://www.data-to-viz.com/caveat/boxplot.html">here</a>, we lose information about the sample size and underlying data distribution.</li>
+<li>When comparing a pair of observations, the classical <strong>barplots with error bars</strong> can be misleading. This <a href="https://www.data-to-viz.com/caveat/error_bar.html">page</a> describes how outliers and unequal sample sizes between the compared datasets can lead us to make false conclusions.</li>
+</ul></li>
+</ul>
 </div>
 
 

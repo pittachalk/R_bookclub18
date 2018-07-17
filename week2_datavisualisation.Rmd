@@ -13,17 +13,36 @@ We plan to read through the third chapter of the book about data visualisation.
 
 ## Questions for review (answers in the book)
 
-1. What is an **aesthetic**? Name three examples. (section 3.3)
+1. What is an **aesthetic**? Name three examples of aesthetic in ggplot2. (section 3.3) 
+
+2. What are **facets**? 
+    * Distinguish between facet_wrap() and facet_grid(). (section 3.5)
+
+3. What is a **geom**? (section 3.6)
+    * What's the difference between **global** and **local** mapping?
 
 ## Questions to ponder (answers in the brain)
 
-1. Discrete vs continuous data: colour, shape, size, alpha
+1. Distinguish between discrete and continuous data. For these aesthetics, discuss which is suitable for discrete, continuous data, both or neither.
+    * size
+    * shape
+    * colour
+    * linetype
+    * alpha
+    
+    Consider: discrete data can be categorial or non-categorial.
+    
+2. With respect to **geom_point** objects, what is the maximum number of dimensions of our data could be simultaneously represented **within a single ggplot**?
+    * Consider we have two axes, various aesthetics and facetting at our disposal.
+
+3. How many colours can the human eye distinguish?
 
 ## Interesting discussions 
 
 * Things that doesn’t convey information about a variable, but only changes the appearance of the plot go outside aes. 
 
+* There are many types of geoms to visualise the same dataset, and they can reveal different aspects about it. There are over 30 geoms in ggplot2 summarised in their official [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf). Also recommended is the [from Data to Viz](https://www.data-to-viz.com/) website. They feature a  [section](https://www.data-to-viz.com/caveats.html) about the caveats of commonly used plots, and how one could work around their pitfalls:
+    * **Boxplots** summarise a distribution into several numbers: Q1, median, Q3, etc. However, as described [here](https://www.data-to-viz.com/caveat/boxplot.html), we lose information about the sample size and underlying data distribution.
+    * When comparing a pair of observations, the classical **barplots with error bars** can be misleading. This [page](https://www.data-to-viz.com/caveat/error_bar.html) describes how outliers and unequal sample sizes between the compared datasets can lead us to make false conclusions.
 
-## Answers and example code
 
-to come
