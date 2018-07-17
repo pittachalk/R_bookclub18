@@ -13,12 +13,17 @@ We plan to read through the third chapter of the book about data visualisation.
 
 ## Questions for review (answers in the book)
 
-to come
+1. What is an **aesthetic**? Name three examples. (section 3.3)
 
 ## Questions to ponder (answers in the brain)
 
-to come
+1. Discrete vs continuous data: colour, shape, size, alpha
 
 ## Interesting discussions 
+
+* Things that doesn’t convey information about a variable, but only changes the appearance of the plot go outside aes. 
+
+
+## Answers and example code
 
 to come
