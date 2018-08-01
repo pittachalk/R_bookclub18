@@ -1,0 +1,12 @@
+---
+title: "Week 3: 3 August 2018 --- Data visualisation and R basics"
+output: 
+  html_document:
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We plan to read through the second half of the [third chapter](http://r4ds.had.co.nz/data-visualisation.html), and the [fourth](http://r4ds.had.co.nz/workflow-basics.html).
