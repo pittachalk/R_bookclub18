@@ -10,3 +10,34 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 We plan to read through the second half of the [third chapter](http://r4ds.had.co.nz/data-visualisation.html), and the [fourth](http://r4ds.had.co.nz/workflow-basics.html).
+
+```{r, message=FALSE, echo=FALSE, results=FALSE}
+library(tidyverse)
+```
+
+## Questions for review (answers in the book)
+
+## Questions to ponder (answers in the brain)
+
+1. In section 3.3, ggplot advises against using the size of points in a scatterplot to represent a **discrete, categorial** variable (in this case, the class of vehicle).
+    
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, size = class))
+```
+    
+A similar warning does not appear if one uses the colour of the points to do so.
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+```
+
+How many colours can the human eye comfortably distinguish? At what point should one consider using faceting (like the code below) instead of putting everything in a single plot? See question 4 in section 3.5.1 and this [webpage](https://blog.graphiq.com/finding-the-right-color-palettes-for-data-visualizations-fcd4e707a283).
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class), show.legend = FALSE) +
+  facet_wrap(~class)
+```
+
+Note how I used `show.legend = FALSE` to hide the legend, as it would have been redundant with respect to the individual headers.
