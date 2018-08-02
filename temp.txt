@@ -8,3 +8,8 @@ ggplot(data = mpg) +
 
 
 
+ggplot(data = diamonds) + 
+  stat_summary(
+    mapping = aes(x = cut, y = depth),
+    fun.data = mean_se #mean_cl_boot
+  )
