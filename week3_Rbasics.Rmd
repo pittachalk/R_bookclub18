@@ -6,7 +6,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.width = 5, fig.height = 3)
 ```
 
 We read through the second half of the [third chapter](http://r4ds.had.co.nz/data-visualisation.html), and the [fourth](http://r4ds.had.co.nz/workflow-basics.html). I was chairing the session. Here is a collection of topics that were discussed and my code for reference.
@@ -18,25 +18,25 @@ library(tidyverse)
 ## So many categories, so few colours
 In section 3.3, ggplot advises against using the **size** of points in a scatterplot to represent a **discrete, categorial** variable (in this case, the class of vehicle). 
     
-```{r, fig.height = 3, fig.width = 5}
+```{r}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, size = class))
 ```
 
 If told to use **shape** to represent the third variable, ggplot uses six shapes at most and left the seventh class (SUVs) unplotted in this case.
-```{r, fig.height = 3, fig.width = 5}
+```{r}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, shape = class))
 ```
     
 A similar warning does not appear if one uses **colour**, which surprises me. In my eyes, the plot below with different colours for the seven categories looks confusing. **How many colours can the human eye comfortably distinguish?** I can do four at most.
-```{r, fig.height = 3, fig.width = 5}
+```{r}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
 Sometimes, one should consider using faceting instead of putting everything in a single plot. Note how I used `show.legend = FALSE` to hide the legend, as it would have been redundant given we now have the individual headers.
-```{r}
+```{r, fig.height = 5, fig.width = 7}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class), show.legend = FALSE) +
   facet_wrap(~class)
@@ -46,12 +46,103 @@ Facetting the data this way allows us to clearly visualise individual trends by 
 
 This discussion is related to question 4 in section 3.5.1. Also check out this [blogpost](https://blog.graphiq.com/finding-the-right-color-palettes-for-data-visualizations-fcd4e707a283), and [Rbrewer](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/) colours which feature colour pallettes suitable for colour blind individuals.
 
+## Putting the layer(s) in "the layered grammar of graphics"
 
-## The peculiar aesthetic mapping known as "group = 1"
-to come
+To come
 
-## Statistical transformation
+```{r}
+p <- ggplot(data = mpg, mapping = aes(x = displ)) + 
+  geom_tile(aes(x = 3.65, y = 16, width = 1, height = 6),
+            alpha = 0.5, colour = NA, fill = "gold") +
+  geom_point(mapping = aes(y = cyl)) +
+  labs(y = "cyl (black), cty (red) and hwy (blue)")
+```
+
+```{r}
+p + geom_point(mapping = aes(y = cty), colour = "red") +
+  geom_point(mapping = aes(y = hwy), colour = "blue") +
+  ggtitle("blue on top of red")
+```
+
+```{r}
+p + geom_point(mapping = aes(y = hwy), colour = "blue") +
+  geom_point(mapping = aes(y = cty), colour = "red") +
+  ggtitle("red on top of blue")
+```
+
+## The peculiar aes mapping known as "group = 1"
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop..))
+```
+
+```{r}
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
+```
+
+```{r}
+# Multiple groups with one aesthetic
+sample_data <- nlme::Oxboys %>% 
+  filter(Subject %in% c(10,19,8,25,22))
+
+h <- ggplot(data = sample_data, 
+            mapping = aes(x = age, y = height)) + 
+  geom_point(mapping = aes(colour = Subject)) 
+h
+```
+
+```{r, message=FALSE}
+# plots a line of best fit for each group
+h + geom_smooth(mapping = aes(group = Subject))
+```
+
+```{r, message = FALSE}
+## fits a single line of best fit through all points
+h + geom_smooth(mapping = aes(group = 1))
+```
+
+## Statistical transformation = typical confusion
 to come
 
 ## Reversing the assignment `<-` sign: you can do that?!
-to come. I mentioned the concept of piping (`%>%`), which would be covered more in [Chapter 18](http://r4ds.had.co.nz/pipes.html).
+This is how you **assign** a variable in R.
+```{r}
+x <- 3 - 1
+x
+```
+
+But did you know you can also do it this way? One of the perks in R!
+```{r}
+2 + 5 -> y
+y
+```
+
+Using the assignment operator in a reversed fashion is especially useful to capture the output **following a long list of successive operations**. It seems more intuitive to have it at the end rather than the start.
+
+```{r, eval = FALSE}
+#this is just a toy example / pseudocode
+#we'll learn more about these functions in Chapter 5!
+data %>%
+  filter(flower_colour %in% c("red", "green")) %>%
+  mutate(area = pi*radius^2) %>%
+  group_by(petal_shape) %>%
+  summarise(mean.area = mean(area)) -> data_summary
+```
+
+Above, I introduced **pipes** `%>%`, which would be covered in [Chapter 18](http://r4ds.had.co.nz/pipes.html). It serves as a means for one to feed the output of each step to the next. Without pipes, one could alternatively write the code as:
+
+```{r, eval=FALSE}
+#so much redundancy and repetition, prone to typos
+data1 <- filter(data, flower_colour %in% c("red", "green"))
+data2 <- mutate(data1, area = pi*radius^2) %>%
+data3 <- group_by(daTa2, petal_shape) %>%
+data_summary <- summarise(data3, mean.area = mean(area)) 
+```
+
+The intermediate steps assign variables to memory, which might be problematic if the initial dataset was huge. Such code is not only more difficult to read, but is also more **prone to mistakes**. In fact, can you find the typo in the code above? Now, try to imagine debugging code with long variable names like `HereIsAnUnrealisticallyLongVariableNameJustToProveMyPoint`.
+
+
+
+
