@@ -9,35 +9,49 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-We plan to read through the second half of the [third chapter](http://r4ds.had.co.nz/data-visualisation.html), and the [fourth](http://r4ds.had.co.nz/workflow-basics.html).
+We read through the second half of the [third chapter](http://r4ds.had.co.nz/data-visualisation.html), and the [fourth](http://r4ds.had.co.nz/workflow-basics.html). I was chairing the session. Here is a collection of topics that were discussed and my code for reference.
 
 ```{r, message=FALSE, echo=FALSE, results=FALSE}
 library(tidyverse)
 ```
 
-## Questions for review (answers in the book)
-
-## Questions to ponder (answers in the brain)
-
-1. In section 3.3, ggplot advises against using the size of points in a scatterplot to represent a **discrete, categorial** variable (in this case, the class of vehicle).
+## So many categories, so few colours
+In section 3.3, ggplot advises against using the **size** of points in a scatterplot to represent a **discrete, categorial** variable (in this case, the class of vehicle). 
     
-```{r}
+```{r, fig.height = 3, fig.width = 5}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, size = class))
 ```
+
+If told to use **shape** to represent the third variable, ggplot uses six shapes at most and left the seventh class (SUVs) unplotted in this case.
+```{r, fig.height = 3, fig.width = 5}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+```
     
-A similar warning does not appear if one uses the colour of the points to do so.
-```{r}
+A similar warning does not appear if one uses **colour**, which surprises me. In my eyes, the plot below with different colours for the seven categories looks confusing. **How many colours can the human eye comfortably distinguish?** I can do four at most.
+```{r, fig.height = 3, fig.width = 5}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
-How many colours can the human eye comfortably distinguish? At what point should one consider using faceting (like the code below) instead of putting everything in a single plot? See question 4 in section 3.5.1 and this [webpage](https://blog.graphiq.com/finding-the-right-color-palettes-for-data-visualizations-fcd4e707a283).
-
+Sometimes, one should consider using faceting instead of putting everything in a single plot. Note how I used `show.legend = FALSE` to hide the legend, as it would have been redundant given we now have the individual headers.
 ```{r}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class), show.legend = FALSE) +
   facet_wrap(~class)
 ```
 
-Note how I used `show.legend = FALSE` to hide the legend, as it would have been redundant with respect to the individual headers.
+Facetting the data this way allows us to clearly visualise individual trends by class. Here, the overall negative correlation between the two variables (on x- and y-axes) holds true even when the data was partitioned by a third variable. However, this would **not** always be the case, and one can bump into a case of [**Simpson’s paradox**](https://www.data-to-viz.com/caveat/simpson.html). 
+
+This discussion is related to question 4 in section 3.5.1. Also check out this [blogpost](https://blog.graphiq.com/finding-the-right-color-palettes-for-data-visualizations-fcd4e707a283), and [Rbrewer](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/) colours which feature colour pallettes suitable for colour blind individuals.
+
+
+## The peculiar aesthetic mapping known as "group = 1"
+to come
+
+## Statistical transformation
+to come
+
+## Reversing the assignment `<-` sign: you can do that?!
+to come. I mentioned the concept of piping (`%>%`), which would be covered more in [Chapter 18](http://r4ds.had.co.nz/pipes.html).
