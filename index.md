@@ -16,4 +16,4 @@ Discussed the first half of the third chapter about data visualisation using ggp
 
 ## Week 3: 3 August 2018
 
-To come. [Link](week3_Rbasics.html)
+Studied the second half of the [third chapter](http://r4ds.had.co.nz/data-visualisation.html), and the [fourth](http://r4ds.had.co.nz/workflow-basics.html). [Link](week3_Rbasics.html)

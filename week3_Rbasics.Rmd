@@ -16,40 +16,38 @@ library(tidyverse)
 ```
 
 ## So many categories, so few colours
-In section 3.3, ggplot advises against using the **size** of points in a scatterplot to represent a **discrete, categorial** variable (in this case, the class of vehicle). 
-    
+In [Section 3.3](http://r4ds.had.co.nz/data-visualisation.html#aesthetic-mappings), ggplot advises against using the **size** of points in a scatterplot to represent a **discrete, categorial** variable (in this case, the class of vehicle). 
 ```{r}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, size = class))
 ```
 
-If told to use **shape** to represent the third variable, ggplot uses six shapes at most and left the seventh class (SUVs) unplotted in this case.
+If told to use **shape** to represent the third variable, ggplot uses six shapes at most. In this case, it left the seventh class (SUVs) unplotted.
 ```{r}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, shape = class))
 ```
     
-A similar warning does not appear if one uses **colour**, which surprises me. In my eyes, the plot below with different colours for the seven categories looks confusing. **How many colours can the human eye comfortably distinguish?** I can do four at most.
+A similar warning does not appear if one uses **colour**, which surprises me. In my eyes, the plot below with different colours for the seven categories looks confusing. **How many colours can the human eye comfortably distinguish?** Not that many in my opinion.
 ```{r}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
-Sometimes, one should consider using faceting instead of putting everything in a single plot. Note how I used `show.legend = FALSE` to hide the legend, as it would have been redundant given we now have the individual headers.
+Sometimes, one should consider using faceting instead of putting everything in a single plot. Notice that I used `show.legend = FALSE` to hide the legend, as that would have been redundant given we already have the individual headers.
 ```{r, fig.height = 5, fig.width = 7}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class), show.legend = FALSE) +
   facet_wrap(~class)
 ```
 
-Facetting the data this way allows us to clearly visualise individual trends by class. Here, the overall negative correlation between the two variables (on x- and y-axes) holds true even when the data was partitioned by a third variable. However, this would **not** always be the case, and one can bump into a case of [**Simpson’s paradox**](https://www.data-to-viz.com/caveat/simpson.html). 
+Facetting the data this way allows us to clearly visualise individual trends by class. Here, the overall negative correlation between the two variables (on x- and y-axes) holds true, even when the data was partitioned by a third variable. However, this would **not** always be the case, and one can bump into a case of [**Simpson’s paradox**](https://www.data-to-viz.com/caveat/simpson.html). 
 
-This discussion is related to question 4 in section 3.5.1. Also check out this [blogpost](https://blog.graphiq.com/finding-the-right-color-palettes-for-data-visualizations-fcd4e707a283), and [Rbrewer](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/) colours which feature colour pallettes suitable for colour blind individuals.
+This discussion is related to question 4 in [Section 3.5.1](http://r4ds.had.co.nz/data-visualisation.html#exercises-2). Also check out this [blogpost](https://blog.graphiq.com/finding-the-right-color-palettes-for-data-visualizations-fcd4e707a283), and [Rbrewer colours](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/) which feature colour pallettes suitable for colour blind individuals.
 
 ## Putting the layer(s) in "the layered grammar of graphics"
 
-The philosophy of ggplot is that every plot can be broken down as a series of `geom` (and `stat`) objects plotted in a specific order. Compare the following two plots I made using the `diamonds` dataset ([Section 3.7](http://r4ds.had.co.nz/data-visualisation.html#statistical-transformations)).
-
+The philosophy of ggplot is that every plot can be broken down as a series of `geom` (and/or `stat`) objects plotted in a specific order. Compare the following plots made using the `diamonds` dataset ([Section 3.7](http://r4ds.had.co.nz/data-visualisation.html#statistical-transformations)).
 ```{r}
 set.seed(322)
 ggplot(data = diamonds, mapping = aes(x = cut, y = depth)) + 
@@ -62,15 +60,14 @@ ggplot(data = diamonds, mapping = aes(x = cut, y = depth)) +
   stat_summary(fun.ymin = min, fun.ymax = max, fun.y = mean, colour = "red")
 ```
 
-Notice how the position of the red sticks differ in the two plots. The order of the `geom` objects in your code dictates the order by which they are plotted: **what comes first gets plotted first**.
+Notice how the position of the red whiskers differ in the two plots. The order of the `geom` objects in the code dictates the order by which they are plotted: **what comes first gets plotted first**.
 
 ## Within a geom_object, what comes first (also) gets plotted first
 
-One has precise control over which `geom` object gets plotted first. But what about the  points **within** a `geom`? Let's have an example with toy data to illustrate ggplot's quirky behaviour in this aspect.
-
+One has precise control over which `geom` object gets plotted first. But what about the  points **within** a `geom`? Let's have an example to illustrate ggplot's quirky behaviour in this aspect.
 ```{r}
 #simulate 1000 points that are normally distributed on x- and y-axes
-#set the index as 1 to 1000 from start to end of data frame
+#set the index as 1 to 1000 from start to end
 set.seed(322)
 n <- 1000
 sample_data <- as_tibble(list(x = rnorm(n), y = rnorm(n), index = 1:n))
@@ -80,25 +77,22 @@ head(sample_data)
 ```
 
 We plot all the points on a Cartesian plane. Firstly, let's colour the **first ten** points in the dataframe red. This is achieved with `colour = (index <= 10)`.
-
 ```{r}
 ggplot(sample_data, aes(x, y, colour = (index <= 10))) +
   geom_point(show.legend = FALSE) +
   scale_color_manual(values = c("gray", "red"))
 ```
 
-What if we make the **last ten** (`index > 990`) points red?
-
+What if we make the **last ten** (`index > 990`) points blue?
 ```{r}
 ggplot(sample_data, aes(x, y, colour = (index > 990))) +
   geom_point(show.legend = FALSE) +
   scale_color_manual(values = c("gray", "blue"))
 ```
 
-ggplot renders data points in the order by which they appear in the data frame. In the first plot, the red points are the first ten points to be plotted, therefore are occluded by the gray points that come after. That is reversed in the second plot.
+ggplot renders data points in the order by which they appear in the data frame. In the first plot, the red points are the first ten points to be plotted, therefore are occluded by the gray points that come after. That is reversed with the blue points in the second plot.
 
-If one wishes to plot the first ten points in red above the gray points, one way is to first `arrange` the data frame in descending order of `index`, then create the plot. Compare this with the first plot!
-
+If one wishes to plot the first ten points in red above the gray points, one way is to first `arrange` the data frame in descending order of `index`, then create the plot. Contrast this with the first plot!
 ```{r}
 sample_data %>% arrange(desc(index)) %>%
   ggplot(aes(x, y, colour = (index <= 10))) +
@@ -106,8 +100,7 @@ sample_data %>% arrange(desc(index)) %>%
   scale_color_manual(values = c("gray", "red"))
 ```
 
-Alternatively, one could partition the dataset and create separate `geom` objects for each. This is more useful if the dataset cannot be easily arranged, or if there are more than two groups of data.
-
+Alternatively, one could partition the dataset and create separate `geom` objects for each. This is useful if the dataset cannot be easily rearranged, or if there are more than two groups of data.
 ```{r}
 #first ten points in red, last ten points in blue
 ggplot(mapping = aes(x = x, y = y)) +
@@ -118,22 +111,19 @@ ggplot(mapping = aes(x = x, y = y)) +
 
 ## The peculiar aes mapping known as "group = 1"
 
-This is mentioned in Question 5 of [Exercises 3.7.1](http://r4ds.had.co.nz/data-visualisation.html#exercises-4). In the following code, the `..prop..` function is used to calculate the proportion of diamonds exhibiting each class of cut quality (x-axis). 
-
+This is mentioned in Question 5 of [Exercises 3.7.1](http://r4ds.had.co.nz/data-visualisation.html#exercises-4). In the following code, the `..prop..` function is used to calculate the proportion of diamonds exhibiting each cut quality (x-axis). 
 ```{r}
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, y = ..prop..))
 ```
 
-Including `group = 1` tells ggplot to calculate the proportion with respect to the **whole** dataset. In the previous chunk of code, ggplot attempted to calculate the proportion of each cut in its own respective group --- which would be basically 1.
-
+Including `group = 1` tells ggplot to calculate the proportion with respect to the **whole** dataset. In the previous code, ggplot attempted to calculate the proportion of each cut in its own respective group --- which would be 1.
 ```{r}
 ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
 ```
 
 I illustrate the use of this peculiar aesthetic mapping with another dataset with the `Oxboys` dataset. Plotted is the heights of boys in Oxford against (standardised) age, which are then coloured with respect to Subject.
-
 ```{r}
 sample_data <- nlme::Oxboys %>% 
   filter(Subject %in% c(10,19,8,25,22))
@@ -145,13 +135,11 @@ h
 ```
 
 Setting the aes `group = Subject` would plot a line of best fit for each group.
-
 ```{r, message=FALSE}
 h + geom_smooth(mapping = aes(group = Subject))
 ```
 
 Whereas `group = 1` fits the line through all data points.
-
 ```{r, message = FALSE}
 h + geom_smooth(mapping = aes(group = 1))
 ```
@@ -163,17 +151,16 @@ x <- 3 - 1
 x
 ```
 
-But did you know you can also do it this way? One of the perks in R!
+But did you know you can also do it this way? 
 ```{r}
 2 + 5 -> y
 y
 ```
 
 Using the assignment operator in a reversed fashion is especially useful to capture the output **following a long list of successive operations**. It seems more intuitive to have it at the end rather than the start.
-
 ```{r, eval = FALSE}
-#this is just a toy example / pseudocode
-#we'll learn more about these functions in Chapter 5!
+#this is pseudocode --- just to illustrate the logic
+##we'll revisit these functions in Chapter 5!
 data %>%
   filter(flower_colour %in% c("red", "green")) %>%
   mutate(area = pi*radius^2) %>%
@@ -182,7 +169,6 @@ data %>%
 ```
 
 Above, I introduced **pipes** `%>%`, which would be covered in [Chapter 18](http://r4ds.had.co.nz/pipes.html). It serves as a means for one to feed the output of each step to the next. Without pipes, one could alternatively write the code as:
-
 ```{r, eval=FALSE}
 #so much redundancy and repetition, prone to typos
 data1 <- filter(data, flower_colour %in% c("red", "green"))
@@ -191,8 +177,6 @@ data3 <- group_by(daTa2, petal_shape) %>%
 data_summary <- summarise(data3, mean.area = mean(area)) 
 ```
 
-The intermediate steps assign variables to memory, which might be problematic if the initial dataset was huge. Such code is not only more difficult to read, but is also more **prone to mistakes**. In fact, can you find the typo in the code above? Now, try to imagine debugging code with long variable names like `HereIsAnUnrealisticallyLongVariableNameJustToProveMyPoint`.
+The intermediate steps assign variables to memory, which might be problematic if the initial dataset was huge. Furthermore, such code is not only more difficult to read, but is also more **prone to mistakes**. In fact, there is a typo above --- can you spot it?
 
-
-
-
+Now, try to imagine debugging code with variables like `HereIsAnUnrealisticallyLongVariableName`, `iHopeThisProvesMyPointAboutPipes` and `EitherWayPlsUseConciseAndShortVariableNames`.
