@@ -48,63 +48,113 @@ This discussion is related to question 4 in section 3.5.1. Also check out this [
 
 ## Putting the layer(s) in "the layered grammar of graphics"
 
-To come
+The philosophy of ggplot is that every plot can be broken down as a series of `geom` (and `stat`) objects plotted in a specific order. Compare the following two plots I made using the `diamonds` dataset ([Section 3.7](http://r4ds.had.co.nz/data-visualisation.html#statistical-transformations)).
 
 ```{r}
-p <- ggplot(data = mpg, mapping = aes(x = displ)) + 
-  geom_tile(aes(x = 3.65, y = 16, width = 1, height = 6),
-            alpha = 0.5, colour = NA, fill = "gold") +
-  geom_point(mapping = aes(y = cyl)) +
-  labs(y = "cyl (black), cty (red) and hwy (blue)")
+set.seed(322)
+ggplot(data = diamonds, mapping = aes(x = cut, y = depth)) + 
+  stat_summary(fun.ymin = min, fun.ymax = max, fun.y = mean, colour = "red") +
+  geom_point(alpha = 0.25, position = "jitter")
+
+set.seed(322)
+ggplot(data = diamonds, mapping = aes(x = cut, y = depth)) + 
+  geom_point(alpha = 0.25, position = "jitter") +
+  stat_summary(fun.ymin = min, fun.ymax = max, fun.y = mean, colour = "red")
 ```
 
-```{r}
-p + geom_point(mapping = aes(y = cty), colour = "red") +
-  geom_point(mapping = aes(y = hwy), colour = "blue") +
-  ggtitle("blue on top of red")
-```
+Notice how the position of the red sticks differ in the two plots. The order of the `geom` objects in your code dictates the order by which they are plotted: **what comes first gets plotted first**.
+
+## Within a geom_object, what comes first (also) gets plotted first
+
+One has precise control over which `geom` object gets plotted first. But what about the  points **within** a `geom`? Let's have an example with toy data to illustrate ggplot's quirky behaviour in this aspect.
 
 ```{r}
-p + geom_point(mapping = aes(y = hwy), colour = "blue") +
-  geom_point(mapping = aes(y = cty), colour = "red") +
-  ggtitle("red on top of blue")
+#simulate 1000 points that are normally distributed on x- and y-axes
+#set the index as 1 to 1000 from start to end of data frame
+set.seed(322)
+n <- 1000
+sample_data <- as_tibble(list(x = rnorm(n), y = rnorm(n), index = 1:n))
+
+#prints the first few rows of the dataset
+head(sample_data)
+```
+
+We plot all the points on a Cartesian plane. Firstly, let's colour the **first ten** points in the dataframe red. This is achieved with `colour = (index <= 10)`.
+
+```{r}
+ggplot(sample_data, aes(x, y, colour = (index <= 10))) +
+  geom_point(show.legend = FALSE) +
+  scale_color_manual(values = c("gray", "red"))
+```
+
+What if we make the **last ten** (`index > 990`) points red?
+
+```{r}
+ggplot(sample_data, aes(x, y, colour = (index > 990))) +
+  geom_point(show.legend = FALSE) +
+  scale_color_manual(values = c("gray", "blue"))
+```
+
+ggplot renders data points in the order by which they appear in the data frame. In the first plot, the red points are the first ten points to be plotted, therefore are occluded by the gray points that come after. That is reversed in the second plot.
+
+If one wishes to plot the first ten points in red above the gray points, one way is to first `arrange` the data frame in descending order of `index`, then create the plot. Compare this with the first plot!
+
+```{r}
+sample_data %>% arrange(desc(index)) %>%
+  ggplot(aes(x, y, colour = (index <= 10))) +
+  geom_point(show.legend = FALSE) +
+  scale_color_manual(values = c("gray", "red"))
+```
+
+Alternatively, one could partition the dataset and create separate `geom` objects for each. This is more useful if the dataset cannot be easily arranged, or if there are more than two groups of data.
+
+```{r}
+#first ten points in red, last ten points in blue
+ggplot(mapping = aes(x = x, y = y)) +
+  geom_point(data = filter(sample_data, index > 10 & index <= 990), colour = "gray") +
+  geom_point(data = filter(sample_data, index <= 10), colour = "red") +
+  geom_point(data = filter(sample_data, index > 990), colour = "blue")
 ```
 
 ## The peculiar aes mapping known as "group = 1"
+
+This is mentioned in Question 5 of [Exercises 3.7.1](http://r4ds.had.co.nz/data-visualisation.html#exercises-4). In the following code, the `..prop..` function is used to calculate the proportion of diamonds exhibiting each class of cut quality (x-axis). 
 
 ```{r}
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, y = ..prop..))
 ```
 
+Including `group = 1` tells ggplot to calculate the proportion with respect to the **whole** dataset. In the previous chunk of code, ggplot attempted to calculate the proportion of each cut in its own respective group --- which would be basically 1.
+
 ```{r}
 ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
 ```
 
+I illustrate the use of this peculiar aesthetic mapping with another dataset with the `Oxboys` dataset. Plotted is the heights of boys in Oxford against (standardised) age, which are then coloured with respect to Subject.
+
 ```{r}
-# Multiple groups with one aesthetic
 sample_data <- nlme::Oxboys %>% 
   filter(Subject %in% c(10,19,8,25,22))
 
 h <- ggplot(data = sample_data, 
-            mapping = aes(x = age, y = height)) + 
-  geom_point(mapping = aes(colour = Subject)) 
+            mapping = aes(x = age, y = height, colour = Subject)) + 
+  geom_point() 
 h
 ```
 
+Setting the aes `group = Subject` would plot a line of best fit for each group.
+
 ```{r, message=FALSE}
-# plots a line of best fit for each group
 h + geom_smooth(mapping = aes(group = Subject))
 ```
 
+Whereas `group = 1` fits the line through all data points.
+
 ```{r, message = FALSE}
-## fits a single line of best fit through all points
 h + geom_smooth(mapping = aes(group = 1))
 ```
-
-## Statistical transformation = typical confusion
-to come
 
 ## Reversing the assignment `<-` sign: you can do that?!
 This is how you **assign** a variable in R.

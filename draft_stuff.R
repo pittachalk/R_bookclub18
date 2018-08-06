@@ -103,6 +103,13 @@ ggplot(data = diamonds) +
 
 #another example (type ?group):
 
+sample_data <- nlme::Oxboys %>% 
+  filter(Subject %in% c(17,16,15,8,20,1,18,5,23,11,21,3,24,22))
+
+sample_data %>%
+  ggplot(mapping = aes(x = age, y = height, colour = Subject)) +
+  geom_point()
+
 # Multiple groups with one aesthetic
 sample_data <- nlme::Oxboys #%>% 
   #filter(Subject %in% c(10,19,8,25,22))
@@ -127,3 +134,15 @@ ggplot(data = mpg) +
 
 filter(mpg, cyl == 8)
 filter(diamonds, carat > 3)
+
+
+
+#ordering matters
+set.seed(322)
+n <- 1000
+sample_data <- as_tibble(list(x = rnorm(n), y = rnorm(n), index = 1:n))
+
+sample_data %>%
+  ggplot(aes(x,y, colour = (index > 990))) +
+  geom_point() +
+  scale_color_manual(values = c("black", "red"))
