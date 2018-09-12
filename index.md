@@ -17,3 +17,7 @@ Discussed the first half of the third chapter about data visualisation using ggp
 ## Week 3: 3 August 2018
 
 Studied the second half of the third chapter on data visualisation, and the fourth about R fundamentals. [Link](week3_Rbasics.html)
+
+## Week 4: 14 September 2018
+
+We read through the [fifth chapter](http://r4ds.had.co.nz/data-visualisation.html) of the book. It was about data transformation with dplyr. [Link](week4_transformation.html) 

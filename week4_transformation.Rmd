@@ -1,0 +1,155 @@
+---
+title: 'Week 4: 14 September 2018 --- Data Transformation'
+output: 
+  html_document:
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 5, fig.height = 3)
+```
+
+We read through the [fifth chapter](http://r4ds.had.co.nz/data-visualisation.html) of the book. It was about data transformation with **dplyr**, using its primary functions `filter()`, `arrange()`, `select()`, `mutate()`, `summarise()` and `groupby()`. Personally I am already familiar these, so here I focus on eccentric trivia and tidbits I liked in the chapter.
+
+```{r, message=FALSE}
+#import the libraries we need
+library(tidyverse)
+```
+
+## NA values (Q4 in Exercise 5.2.4)
+
+* Almost any operation with `NA` generally results in an unknown value.
+
+```{r, collapse = TRUE}
+NA > 5
+
+NA + 10
+
+10 == NA
+```
+
+* Assuming `NA` is a number, the range of values it can take is `{-Inf, Inf}`. Any number raised to the power of zero is 1, therefore the following will not return an unknown value.
+
+```{r}
+#note that in the second, it calculates NA ^ 0 first before negative
+c( NA ^ 0, -NA ^ 0, (-NA) ^ 0 )
+```
+
+* Based on the documentation for `?logical`, logical vectors are coerced to integer vectors in contexts where a numerical value is required, with `TRUE` being mapped to `1L`, and `FALSE` to `0L`:
+
+```{r, collapse = TRUE}
+#note that anything that is neither 0 nor 1 does not equate to TRUE/FALSE
+c(-Inf, -10, -1, 0, 1, 10, Inf) == TRUE
+c(-Inf, -10, -1, 0, 1, 10, Inf) == FALSE
+```
+
+This means that `NA` can be either `TRUE` or `FALSE`. We don't know. This leads to such behaviours with the `|` and `&` operators.
+
+```{r, collapse = TRUE}
+#only one side needs to be TRUE
+NA | TRUE 
+
+#both sides needs to be TRUE, otherwise FALSE
+NA & FALSE 
+
+#the answer can still be FALSE if left side is FALSE
+NA & TRUE 
+
+#the answer can still be TRUE if left side is TRUE
+NA | FALSE 
+```
+
+* `NA * 0` does not result in 0, as one might expect.  
+
+```{r}
+NA * 0
+```
+
+This is because `Inf * 0` evaluates as `NaN` for 'Not a Number'. Take note of the following behaviours.
+
+```{r, collapse = TRUE}
+Inf * 0
+
+pi / 0 #finite values divided by 0
+
+0 / 0 
+```
+
+* What do you think `Inf - Inf` evaluates to? Check out this [link](https://www.philforhumanity.com/Infinity_Minus_Infinity.html).
+
+## TRUE/FALSE versus truthy/falsy (a minor technicality)
+
+Every value in R has an inherent boolean value, generally known as either **truthy** or **falsey**. This is **different** from being **equal** to `TRUE/FALSE`, which is what the `==` operator tests for!
+
+Remember from above that only `0 == FALSE` and `1 == TRUE`, everything else is neither.
+
+```{r, collapse = TRUE}
+x <- c(0, 1, pi, Inf, -1, -pi, -Inf)
+
+x == TRUE
+
+x == FALSE
+```
+
+However, **all positive and negative numbers except 0** are inherently **truthy**, which one can see when they are run as a condition of an `if` statement.
+
+```{r, collapse = TRUE}
+ifelse(x, 'truthy', 'falsey')
+```
+
+Have a go and check how `NA` and `NaN` are assessed. Spoiler: errors incoming!
+
+## A useful idiom I tend to use to do rowwise summaries
+
+Let's say, in this *unrealistic* task, for each row, we want to calculate the mean of values that belong to columns containing the term "time". 
+
+```{r, collapse = TRUE}
+#provide a glimpse of the dataset we are working with
+library(nycflights13)
+
+colnames(flights)
+```
+
+In other words, we want to calculate the mean between `dep_time`, `sched_dep_time`, `arr_time`, `sched_arr_time` and `air_time` **for each row**. Let's take only a subset of the dataset so it's easier to see. I also added a unique index to each row.
+
+```{r}
+data_subset <- flights %>% 
+  select(month, dep_time, sched_dep_time, arr_time, sched_arr_time, air_time) %>% 
+  mutate(unique_id = 1:nrow(flights))
+
+head(data_subset)
+```
+
+The function `summarise` only works in a column fashion. To get around the problem, what I do is first `gather` the values from the five "_time" columns into a single column. I then use `group_by` (based on unique identifiers) and `summarise` to calculate the mean, which I rejoin with the original data frame.
+
+```{r, message = FALSE}
+data_subset %>% 
+  gather("key", "value", contains("time")) %>% 
+  group_by(unique_id) %>% 
+  summarise(mean_time = mean(value)) %>% 
+  full_join(data_subset)
+```
+
+For such a task, I used to use `rowwise()` but has been [advised](https://community.rstudio.com/t/dplyr-alternatives-to-rowwise/8071?page=2) that the function is not vectorised and therefore inefficient. There might still be a less clunky way to do what I showed --- please email me if you know!
+
+## Miscellaneous bits
+
+* The following statements are equivalent due to **de Morgan's Law**.
+
+```{r, results = FALSE}
+flights %>% filter(arr_delay <= 120, dep_delay <= 120) 
+flights %>% filter(!(arr_delay > 120 | dep_delay > 120)) 
+```
+
+* Wrapping an assignment in parentheses both prints out the results, and saves them to a variable.
+
+```{r}
+(dec25 <- filter(flights, month == 12, day == 25))
+```
+
+* Here is a list of verbs/functions I found useful from the chapter:
+    * `near` (section 5.2.1): useful when testing two numbers for equality due to finite precision arithmetic.
+    * `between` (Q2 in exercise 5.2.4)
+    * `everything` (section 5.4): used in conjunction with `select()`
+    * `one_of` (Q3 in section 5.4.1)
+    * `lead` and `lag` (section 5.5.1)

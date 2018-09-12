@@ -1,148 +1,106 @@
 library(tidyverse)
+library(nycflights13)
 
-##############
+?flights
 
-#these two are completely equivalent
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy)) +
-  ggtitle("plot A")
+#prints and saves the variables
+(dec25 <- filter(flights, month == 12, day == 25))
 
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
-  geom_point() +
-  ggtitle("plot B")
+#issues with floating point numbers
+sqrt(2) ^ 2 == 2
+near(sqrt(2) ^ 2, 2)
 
-##############
+#de morgan's law
+flights %>% filter(arr_delay <= 120, dep_delay <= 120) %>% nrow()
+flights %>% filter(!(arr_delay > 120 | dep_delay > 120)) %>% nrow()
 
-#an example to illustrate how multiple aes can be used
-##seriously tho, don't plot three y variables 
-##in the same plot --- it's bloody confusing
-ggplot(data = mpg, mapping = aes(x = displ)) + 
-  geom_point(mapping = aes(y = cyl)) +
-  geom_point(mapping = aes(y = cty), colour = "red") +
-  geom_point(mapping = aes(y = hwy), colour = "blue") +
-  ggtitle("multiple aesthetics") +
-  labs(y = "cyl (black), cty (red) and hwy (blue)")
+#filter excludes NA values by default
 
+#exercise 5.2
+View(flights %>% filter(between(dep_time, 0, 600)), dep_time == 2400)
 
-##############
+View(flights %>% filter(is.na(dep_time)))
 
-#useful stuff to recolour plots in R
-#https://ggplot2.tidyverse.org/reference/scale_brewer.html
+NA ^ 0 #any number to the power of 0 is 1
+NA * 0 #this is not true for infinity
 
-##############
+NA | FALSE 
 
-#3.7.1 q1
-ggplot(data = diamonds) + 
-  stat_summary(
-    mapping = aes(x = cut, y = depth),
-    fun.ymin = min,
-    fun.ymax = max,
-    fun.y = median
+#Inf, 0 and negative numbers are FALSE
+TRUE & NA 
+FALSE & NA 
+
+View(flights %>% arrange(desc(is.na(dep_time)), dep_time))
+
+#this is useful to move a few things to the start
+select(flights, time_hour, air_time, everything())
+
+#doesnt do shit
+rename(flights)
+
+select(flights, dep_time, arr_time, dep_time) #doesnt replicate it
+
+#ignore cases!
+select(flights, contains("TIME", ignore.case = FALSE))
+
+lag(1:10)
+lead(1:10)
+
+#comparing air time with arr_time - dep_time
+flights %>% transmute(air_time, test = arr_time - dep_time, arr_time, dep_time)
+
+flights %>% transmute(air_time, arr_time, dep_time, 
+                      compare = (arr_time %/% 100 - dep_time %/% 100) * 60 +
+                        arr_time %% 100 - dep_time %% 100)
+                        
+dictionary <- airports$tz
+names(dictionary) <- airports$faa
+
+flights %>% transmute(air_time, arr_time, dep_time, 
+                      arr_time_min = arr_time %/% 100 * 60 + arr_time %% 100,
+                      dep_time_min = dep_time %/% 100 * 60 + dep_time %% 100,
+                      air_time_2 = (arr_time_min - dep_time_min + 1440) %% 1440,
+                      air_time_diff = air_time_2 - air_time)
+
+dictionary <- airports$tz
+names(dictionary) <- airports$faa
+
+dictionary2 <- airports$dst
+names(dictionary2) <- airports$faa
+
+flights_test <- flights %>% mutate(
+  origintz = dictionary[origin],
+  desttz = dictionary[dest],
+  origindst = dictionary2[origin], 
+  destdst = dictionary2[dest])
+
+#3.6: 
+not_cancelled <- flights %>% filter(!is.na(dep_delay), !is.na(arr_delay))
+
+delays <- not_cancelled %>% group_by(tailnum) %>% summarise(
+  delay = mean(arr_delay) )
+
+not_cancelled %>%
+  group_by(year, month, day) %>% 
+  summarise(avg_delay1 = mean(arr_delay),
+            avg_delay2 = mean(arr_delay[arr_delay > 0]) # the average positive delay
   )
 
-ggplot(data = diamonds) +
-  geom_pointrange(
-    mapping = aes(x = cut, y = depth),
-    stat = "summary",
-    fun.ymin = min,
-    fun.ymax = max,
-    fun.y = median
-  )
-
-#fancier version
-ggplot(data = diamonds, 
-       mapping = aes(x = cut, y = depth)) + 
-  stat_summary(fun.ymin = min, fun.ymax = max, 
-               fun.y = mean, colour = "red") +
-  geom_point(alpha = 0.5, position = "jitter")
-
-ggplot(data) +
-  geom_point(mapping = aes(x = x, y = y,
-                           colour = marker_gene_status))
-
-ggplot(mapping = aes(x=x, y=y)) +
-  geom_point(data %>% filter(marker == FALSE), 
-             colour = "black") +
-  geom_point(data %>% filter(marker == TRUE), 
-             colour = "red")
-
-data %>% filter(marker == FALSE) %>%
-  group_by(geneid) %>%
-  summarise(mean) -> x
-
-randomVariablewithalOndName <- filter(data, marker == FALSE)
-randomkVariablewithalOndName <- group_by(randomVariablewithalOndName, geneid)
-randomVariablewithalOndName <- sumarrise(randomVariablewithalOndName, mean)
-
-
-
-
-##############
-
-#3.7.1 q4
-ggplot(data = diamonds, mapping = aes(x = carat, y = depth) ) + 
-  geom_point(alpha = 0.1, position = "jitter") +
-  stat_smooth()
-
-##############
-
-#3.7.1 q5
-
-ggplot(data = diamonds) + 
-  geom_bar(mapping = aes(x = cut, y = ..prop..,
-                         fill = color))
-
-ggplot(data = diamonds) + 
-  geom_bar(mapping = aes(x = cut, y = ..prop..))
-ggplot(data = diamonds) +
-  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
-
-ggplot(data = diamonds) +
-  geom_bar(mapping = aes(x = cut, y = ..prop.., 
-                         fill = color, group = color))
-
-#another example (type ?group):
-
-sample_data <- nlme::Oxboys %>% 
-  filter(Subject %in% c(17,16,15,8,20,1,18,5,23,11,21,3,24,22))
-
-sample_data %>%
-  ggplot(mapping = aes(x = age, y = height, colour = Subject)) +
+not_cancelled %>%
+  group_by(dest) %>%
+  summarise(no_unique = length(unique(origin)), distance_sd = sd(distance)) %>% 
+  arrange(desc(distance_sd), no_unique) %>%
+  ggplot(aes(no_unique, distance_sd)) +
   geom_point()
 
-# Multiple groups with one aesthetic
-sample_data <- nlme::Oxboys #%>% 
-  #filter(Subject %in% c(10,19,8,25,22))
+#n_distinct, min_rank, count(wt)
 
-h <- ggplot(data = sample_data, 
-            mapping = aes(age, height, colour = Subject)) + 
-  geom_point()
-h
+#function to add weighted means
 
-# this plots
-h + geom_smooth()
-h + geom_smooth(aes(group = Subject), formula = y~x,
-                method = "lm")
+filter(flights, is.na(air_time), !is.na(dep_delay)) %>%
+  select(dep_time, arr_time, sched_arr_time, dep_delay, arr_delay, air_time) %>%  tail()
 
-## fits a single line of best fit across all points
-h + geom_smooth(aes(group = 1), size = 2, method = "lm")
+filter(flights, !is.na(dep_delay), is.na(arr_delay), is.na(air_time)) %>%
+  select(dep_time, arr_time, sched_arr_time, dep_delay, arr_delay, air_time)
 
-##############
-
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
-
-filter(mpg, cyl == 8)
-filter(diamonds, carat > 3)
-
-
-
-#ordering matters
-set.seed(322)
-n <- 1000
-sample_data <- as_tibble(list(x = rnorm(n), y = rnorm(n), index = 1:n))
-
-sample_data %>%
-  ggplot(aes(x,y, colour = (index > 990))) +
-  geom_point() +
-  scale_color_manual(values = c("black", "red"))
+ggplot(flights, aes(x = dep_delay, y = arr_delay)) + geom_point()
