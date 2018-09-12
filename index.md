@@ -20,4 +20,4 @@ Studied the second half of the third chapter on data visualisation, and the four
 
 ## Week 4: 14 September 2018
 
-We read through the [fifth chapter](http://r4ds.had.co.nz/data-visualisation.html) of the book. It was about data transformation with dplyr. [Link](week4_transformation.html) 
+Following a long summer break, journeyed through the fifth chapter about data transformation with dplyr. [Link](week4_transformation.html) 
